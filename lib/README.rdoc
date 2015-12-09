@@ -1,0 +1,227 @@
+= UdooNeoREST
+
+This GEM provides REST service for the UDOO NEO GPIO's, the inbuilt motion sensors
+(Accelerometer/Magnetometer/Gyroscope) and the Bricks Snap-in Sensors (Barometer/Temperature)
+
+== Why?
+
+I wanted to be able to easily manipulate and monitor the GPIOs over HTTP.
+
+Why did I choose Ruby when its not installed by default on the UDOO Neo image? No reason other
+than I like coding in Ruby and I have always wanted to give Sinatra a go.
+
+== Installing Ruby
+
+These instructions assume you have a fresh UDOO Neo image.
+
+1) Install RVM
+
+RVM (https://rvm.io) is nice tool to make installing and managing different versions of Ruby easy.
+Its not a 100% requirement, but the instructions below assume RVM is installed.
+
+    $ gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+
+    $ \curl -sSL https://get.rvm.io | bash -s stable
+
+Yes the \ before curl is to be included.
+
+
+2) Install the latest version of Ruby
+
+    $ rvm install ruby --latest
+
+
+3) Walk away and have a nice beverage of your choosing and come back after watching a rerun of a GoT episode.
+
+
+== Gem Installation
+
+Install the gem using rubygems
+
+    $ gem install udooneorest
+
+
+== Starting the REST service
+
+To start the REST service simply issue the command:
+
+    $ udooneorest
+
+
+== The API
+
+I've written the API with two slightly different implementations.
+
+The first is what you would consider a proper RESTful implementation whereby
+creates use POST, updates use PUT and read uses GET.
+
+The second I created because I know many (like me) sometimes would prefer to
+avoid firing up a REST Console when they want some quick data. So my "lazyrest"
+implementation duplicates the API but using gets only (so you can simply use
+your browser).
+
+=== Port
+
+The server listens on 4567 so you can access it in the following way: http://udooneo.local:4567/{api}
+
+=== GPIO versus PIN
+
+The UDOO Neo uses the GPIO in all its commands, but on the board it displays
+the PIN numbers (PCB Names). You can use either the GPIO or the PIN in the
+appropriate API and udooneorest will translate it appropriately.
+
+Details of the GPIO to PIN mappings can be found here: http://www.udoo.org/docs-neo/Hardware_&_Accessories/Gpio.html
+
+=== REST Response
+
+The response to the REST call will be JSON structured in the following format:
+
+    {'status' : 'success|failed', 'message' : 'If it failed, a description of why will be here'}
+
+=== GPIO Services
+
+==== Export
+
+Exporting enables the GPIO if it hasn't been previosly enabled. If you are using
+a specific GPIO for the first time, then you should export it before you will
+be able to set the direction or a value.
+
+If you export a GPIO more than once, the successive export will generate a
+failed response.
+
+==== RESTful
+
+    POST /gpio/{gpio#}/export
+    POST /pin/{pin#}/export
+
+==== Lazyrest
+
+    GET /lazyrest/gpio/{gpio#}/export
+    GET /lazyrest/pin/{pin#}/export
+
+
+==== Direction
+
+To manipulate or read the direction of the GPIO use the following calls.
+
+==== RESTful
+
+    PUT /gpio/{gpio#}/direction/{in|out}
+    PUT /pin/{pin#}/direction/{in|out}
+    GET /gpio/{gpio#}/direction
+    GET /pin/{pin#}/direction
+
+==== Lazyrest
+
+    GET /lazyrest/gpio/{gpio#}/direction/{in|out}
+    GET /lazyrest/pin/{pin#}/direction/{in|out}
+    GET /lazyrest/gpio/{gpio#}/direction
+    GET /lazyrest/pin/{pin#}/direction
+
+
+==== Value
+
+To manipulate or read the value of the GPIO use the following calls. The value can be 0 or 1 (low 0v or high 3v3).
+
+If you try to set the value for a GPIO where the direction is "IN" expect an error.
+
+Also a warning about reading the value, straight from the UDOO Neo GPIO documentation:
+
+"If the direction is set to out and you try to read the value, it is not guaranteed that the kernel value is coherent with the voltage found on the external pinout."
+
+==== RESTful
+
+    PUT /gpio/{gpio#}/value/{0|1}
+    PUT /pin/{pin#}/value/{0|1}
+    GET /gpio/{gpio#}/value
+    GET /pin/{pin#}/value
+
+==== Lazyrest
+
+    GET /lazyrest/gpio/{gpio#}/value/{0|1}
+    GET /lazyrest/pin/{pin#}/value/{0|1}
+    GET /lazyrest/gpio/{gpio#}/value
+    GET /lazyrest/pin/{pin#}/value
+
+=== Motion Sensors
+
+==== Accelerometer
+
+To manipulate and read the Accelerometer use the following calls.
+
+==== RESTful
+
+    PUT /accelerometer/enable
+    PUT /accelerometer/disable
+    GET /accelerometer/value
+
+==== Lazyrest
+
+    GET /lazyrest/accelerometer/enable
+    GET /lazyrest/accelerometer/disable
+    GET /lazyrest/accelerometer/value
+
+
+==== Gyroscope
+
+To manipulate and read the Gyroscope use the following calls.
+
+==== RESTful
+
+    PUT /gyroscope/enable
+    PUT /gyroscope/disable
+    GET /gyroscope/value
+
+==== Lazyrest
+
+    GET /lazyrest/gyroscope/enable
+    GET /lazyrest/gyroscope/disable
+    GET /lazyrest/gyroscope/value
+
+==== Magnetometer
+
+To manipulate and read the Magnetometer use the following calls.
+
+==== RESTful
+
+    PUT /magnetometer/enable
+    PUT /magnetometer/disable
+    GET /magnetometer/value
+
+==== Lazyrest
+
+    GET /lazyrest/magnetometer/enable
+    GET /lazyrest/magnetometer/disable
+    GET /lazyrest/magnetometer/value
+
+
+=== Bricks Snap-in Sensors
+
+==== Temperature
+
+To read the Temperature use the following calls.
+
+==== RESTful
+
+    GET /temperature/value
+    
+==== Lazyrest
+
+    GET /lazyrest/temperature/value
+
+
+==== Barometer
+
+To read the Barometer use the following calls.
+
+==== RESTful
+
+    GET /barometer/value
+
+==== Lazyrest
+
+    GET /lazyrest/barometer/value
+
+
+
+
