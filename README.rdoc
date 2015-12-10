@@ -10,6 +10,33 @@ I wanted to be able to easily manipulate and monitor the GPIOs over HTTP.
 Why did I choose Ruby when its not installed by default on the UDOO Neo image? No reason other
 than I like coding in Ruby and I have always wanted to give Sinatra a go.
 
+== Before you start
+
+As of the beta5 release of the UDOO Neo Ubunto image, there remains an issue where you will need to make
+a few changes to allow the udooer account to have sufficent rights to interact with the gpios. This
+is discussed in this forum thread (http://www.udoo.org/forum/threads/gpio-through-sys-class.3020/) but I have
+summarized what you need to do here:
+
+1) Edit the file /etc/udev/rules.d/10-imx.rules
+
+    sudo vi /etc/udev/rules.d/10-imx.rules
+
+2) Add the following lines:
+
+    SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c 'chown -R root:ugpio /sys%p'"
+    SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c 'chmod -R g+rw /sys%p'"
+    SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c 'chown -R root:ugpio /sys/class/gpio/export'"
+    SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c 'chmod -R g+w /sys/class/gpio/export'"
+
+3) Make the following group/user changes:
+
+    sudo groupadd -r ugpio
+    sudo usermod -a -G ugpio udooer
+
+4) Reboot!
+
+    sudo shutdown -r now
+
 == Installing Ruby
 
 These instructions assume you have a fresh UDOO Neo image.
@@ -25,20 +52,28 @@ Its not a 100% requirement, but the instructions below assume RVM is installed.
 
 Yes the \ before curl is to be included.
 
+2) Load RVM
 
-2) Install the latest version of Ruby
+Either logout of your ssh session and log back in, or issue the following command to load rvm manually:
+
+    source /home/udooer/.rvm/scripts/rvm
+
+3) Install the latest version of Ruby
 
     $ rvm install ruby --latest
 
+After a few minutes you will be required to enter the udooer account password:
 
-3) Walk away and have a nice beverage of your choosing and come back after watching a rerun of a GoT episode.
+    udooer password required for 'apt-get --quiet --yes update': <password>
+
+4) Walk away and have a nice beverage of your choosing and come back after watching a rerun of a GoT episode.
 
 
 == Gem Installation
 
-Install the gem using rubygems
+Install the udooneorest gem using rubygems
 
-    $ gem install udooneorest
+    $ gem install udooneorest --no-ri --no-rdoc
 
 
 == Starting the REST service
@@ -222,6 +257,11 @@ To read the Barometer use the following calls.
 
     GET /lazyrest/barometer/value
 
+=== Example
 
+Here is an example using the API to export gpio 25, set the direction to out and
+finally set the value to 1 (3v3).
 
-
+    http://udooneo.local:4567/lazyrest/gpio/25/export
+    http://udooneo.local:4567/lazyrest/gpio/25/direction/out
+    http://udooneo.local:4567/lazyrest/gpio/25/value/1
