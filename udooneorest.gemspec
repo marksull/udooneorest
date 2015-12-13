@@ -2,8 +2,8 @@ require 'rake'
 
 Gem::Specification.new do |s|
   s.name        = 'udooneorest'
-  s.version     = '1.0.0'
-  s.date        = '2015-12-07'
+  s.version     = '1.0.1'
+  s.date        = '2015-12-13'
   s.summary     = 'Rest API for interacting with UDOO Neo'
   s.description = 'Rest API for interacting with UDOO Neo GPIOs, motion sensors and brick sensors'
   s.authors     = ['Mark Sullivan']
