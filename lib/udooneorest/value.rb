@@ -96,8 +96,8 @@ module UdooNeoRest
       return gpio_.error_message unless gpio_.valid?
 
       # Validate the value
-      value         = ValidateValue.new value
-      return value.error_message unless value.valid?
+      value_         = ValidateValue.new value
+      return value_.error_message unless value_.valid?
 
       # Send the command and if no error return an OK result
       result         = UdooNeoRest::Base.echo value, "#{BASE_PATH}gpio#{gpio}/value"
