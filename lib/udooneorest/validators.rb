@@ -49,8 +49,8 @@ module UdooNeoRest
   class ValidateGpio < Validate
 
     def valid?
-      unless GPIOS.include?(@value)
-        @error_message = UdooNeoRest::Base.status_error("GPIO value of '#{@value}' is invalid. Should be one of #{GPIOS.sort.join(',')}.")
+      unless GPIOS.include?(@value) && (@value != 'NA')
+        @error_message = UdooNeoRest::Base.status_error("GPIO value of '#{@value}' is invalid. Should be one of #{(GPIOS - ['NA']).sort.join(',')}.")
         return false
       end
 
@@ -93,8 +93,8 @@ module UdooNeoRest
     end
 
     def valid?
-      if (16 > @value || @value > 47)
-        @error_message = UdooNeoRest::Base.status_error("Pin value of '#{@value}' is invalid. Should be between >=16 and <=47.")
+      if (@value > 47) || (GPIOS[@value] == 'NA')
+        @error_message = UdooNeoRest::Base.status_error("Pin value of #{@value} is invalid. Please refer to UDOO Neo documentation.")
         return false
       end
 
@@ -107,7 +107,7 @@ module UdooNeoRest
     #
     def to_gpio
       return nil unless valid?
-      GPIOS[@value-16]
+      GPIOS[@value]
     end
 
   end
