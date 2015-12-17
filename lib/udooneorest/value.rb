@@ -64,7 +64,7 @@ module UdooNeoRest
       return gpio_.error_message unless gpio_.valid?
 
       # Get the value
-      UdooNeoRest::Base.status_ok(UdooNeoRest::Base.cat "#{BASE_PATH}gpio#{gpio}/value")
+      UdooNeoRest::Base.cat_and_status "#{BASE_PATH}gpio#{gpio}/value"
     end
 
     #############################################################################

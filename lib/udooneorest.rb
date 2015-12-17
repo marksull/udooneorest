@@ -79,7 +79,11 @@ module UdooNeoRest
     # file       : the file to cat
     #
     def self.cat(file)
-      File.read(file).chomp
+      begin
+        return File.read(file).chomp
+      rescue Exception => e
+        return nil
+      end
     end
 
     #############################################################################
@@ -133,7 +137,12 @@ module UdooNeoRest
     # file       : the file to cat
     #
     def self.cat_and_status(file)
-      UdooNeoRest::Base.status_ok(UdooNeoRest::Base.cat file)
+      result = UdooNeoRest::Base.cat file
+      unless result.nil?
+        return UdooNeoRest::Base.status_ok result
+      end
+
+      return UdooNeoRest::Base.status_error 'GPIO/PIN could not be read. Have you already exported the GPIO/PIN?'
     end
 
     #############################################################################

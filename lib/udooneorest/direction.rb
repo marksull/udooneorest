@@ -64,7 +64,7 @@ module UdooNeoRest
       return gpio_.error_message unless gpio_.valid?
 
       # get the direction
-      UdooNeoRest::Base.status_ok(UdooNeoRest::Base.cat "#{BASE_PATH}gpio#{gpio}/direction")
+      UdooNeoRest::Base.cat_and_status "#{BASE_PATH}gpio#{gpio}/direction"
     end
 
     #############################################################################
