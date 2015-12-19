@@ -35,7 +35,7 @@ module UdooNeoRest
     # message      : the message to be displayed
     #
     def self.status_message(status, message)
-      "{'status' : '#{status}', 'message' : '#{message}'}"
+      %Q({"status" : "#{status}", "message" : "#{message}"})
     end
 
     #############################################################################
