@@ -53,7 +53,7 @@ module UdooNeoRest
     # message      : the message to be displayed
     #
     def self.status_error(message)
-      status_message(FAILED_MESSAGE, message)
+      [400, status_message(FAILED_MESSAGE, message)]
     end
 
     #############################################################################
