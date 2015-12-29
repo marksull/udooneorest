@@ -27,6 +27,8 @@ summarized what you need to do here:
     SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c 'chmod -R g+rw /sys%p'"
     SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c 'chown -R root:ugpio /sys/class/gpio/export'"
     SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c 'chmod -R g+w /sys/class/gpio/export'"
+    SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c 'chown -R root:ugpio /sys/class/gpio/unexport'"
+    SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c 'chmod -R g+w /sys/class/gpio/unexport'"
 
 3) Make the following group/user changes:
 
