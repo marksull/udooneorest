@@ -1,5 +1,7 @@
 = UdooNeoREST
 
+{<img src="https://badges.gitter.im/marksull/udooneorest.svg" alt="Join the chat at https://gitter.im/marksull/udooneorest">}[https://gitter.im/marksull/udooneorest?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge]
+
 This GEM provides REST service for the UDOO NEO GPIO's, the inbuilt motion sensors
 (Accelerometer/Magnetometer/Gyroscope) and the Bricks Snap-in Sensors (Barometer/Temperature)
 
